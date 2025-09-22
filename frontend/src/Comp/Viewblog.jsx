@@ -17,7 +17,6 @@ export const Viewblog = () => {
       if(res.data.status){
         console.log(res.data.message);
         setDetails(res.data.data);
-        console.log(res.data.data);
         setRelated(res.data.relatedblogs);
       }else{
         console.log(res);
@@ -27,11 +26,21 @@ export const Viewblog = () => {
     })
   }
 
-
+Axios.defaults.withCredentials = true;
   useEffect(()=>{
-    getdetails();
-    },[]);
+    Axios.get('http://localhost:3000/verify').then((res)=>{
+        if(res.data.status){
+          console.log(res.data.message);
+          setAuth(true);
+        }else{
+          setAuth(false);
+        }
+     })
+    },[setAuth]);
     
+    useEffect(()=>{
+      getdetails();
+    },[details])
   return (
     <div>
         <div className="container ">
