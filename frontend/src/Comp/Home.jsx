@@ -1,4 +1,4 @@
-import Axios from "axios";
+import Axios from "../Api";
 import { useEffect } from "react";
 import { useContext } from "react"
 import { GlobContext } from "../Global"
@@ -7,9 +7,9 @@ import { Link} from "react-router-dom"
 
 export const Home = () => {
   const {setAuth,allblogs}=useContext(GlobContext);
-  Axios.defaults.withCredentials = true;
+  //Axios.defaults.withCredentials = true;
   useEffect(()=>{
-     Axios.get('http://localhost:3000/verify').then((res)=>{
+     Axios.get('/verify').then((res)=>{
         if(res.data.status){
           console.log(res.data.message);
           setAuth(true);
@@ -26,7 +26,7 @@ export const Home = () => {
       latest.push(
         <div className="col" key={i}>
               <div className="card">
-                  <img src={`http://localhost:3000/public/images/${item.profilepic}`} alt="img" className="card-img-top cards-img"/>
+                  <img src={`${import.meta.env.VITE_BASE_URL }/public/images/${item.profilepic}`} alt="img" className="card-img-top cards-img"/>
                   <div className="card-body">
                       <h4 className="card-title">{item.title}</h4>
                       <Link to={`/viewpost/${item._id}`} className="btn btn-warning">View Blog</Link>

@@ -7,27 +7,27 @@ import { Draft } from "./Draft";
 import { Myblogs } from "./Myblogs";
 import { Create } from "./Create"
 import { GlobContext } from "../Global"
-import Axios from 'axios'
+import Axios from '../Api'
 
 
 export const Dashboard = () => {
     const {logout,setAuth}=useContext(GlobContext);
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
   const [tab,setTab]=useState("create");
   Axios.defaults.withCredentials = true;
   useEffect(()=>{
-     Axios.get('http://localhost:3000/verify').then((res)=>{
+     Axios.get('/verify').then((res)=>{
         if(res.data.status){
           console.log(res.data.message);
           setAuth(true);
         }else{
           console.log(res.data.message);
           setAuth(false);
-          Navigate('/login');
+          navigate('/login');
         }
      })
-  },[setAuth,Navigate]);
+  },[setAuth,navigate]);
   useEffect(()=>{
       const urlparams=new URLSearchParams(location.search);
       const tabfromurl = urlparams.get('tab');

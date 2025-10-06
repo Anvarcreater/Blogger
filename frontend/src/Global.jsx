@@ -1,6 +1,6 @@
 import {createContext, useEffect, useState} from 'react'
 //import PropTypes from 'prop-types';
-import Axios from 'axios';
+import Axios from './Api';
 import { useNavigate } from "react-router-dom"
 export const GlobContext =createContext(null);
 
@@ -15,14 +15,13 @@ export const Global = ({children}) => {
     const [draft,setdraft] = useState([]);
 
     useEffect(()=>{
-       getmyblogs();
+       fetchmyblogs();
     },[Auth]);
 
    
 
-  Axios.defaults.withCredentials=true;
-  const getmyblogs= ()=>{
-     Axios.get('http://localhost:3000/getmyblogs').then((res)=>{
+  const fetchmyblogs= ()=>{
+     Axios.get('/myblogs').then((res)=>{
         if(res.data.status){
            console.log(res.data.message);
            setMyblogs(res.data.data);
@@ -33,8 +32,8 @@ export const Global = ({children}) => {
      })
   }
 
-  const getallblogs = ()=>{
-     Axios.get('http://localhost:3000/getallblogs').then((res)=>{
+  const fetchallblogs = ()=>{
+     Axios.get('/blogs').then((res)=>{
         if(res.data.status){
           console.log(res.data.message);
           setAllblogs(res.data.data);
@@ -44,11 +43,11 @@ export const Global = ({children}) => {
      })
   }
 useEffect(()=>{
-  getallblogs();
+  fetchallblogs();
 },[]);
 
     const logout=()=>{
-      Axios.post('http://localhost:3000/logout').then((res)=>{
+      Axios.post('/logout').then((res)=>{
           if(res.data.status){
               console.log(res);
               setAuth(false);
@@ -60,7 +59,7 @@ useEffect(()=>{
   }
   return (
     <GlobContext.Provider value={{Auth,setAuth,email,setEmail,password,setPassword,logout,
-      myblogs,getmyblogs,allblogs,getallblogs,result,setResult,draft}}>
+      myblogs,fetchmyblogs,allblogs,fetchallblogs,result,setResult,draft}}>
       {children}</GlobContext.Provider>
   )
 }

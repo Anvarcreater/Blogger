@@ -1,8 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { GlobContext } from "../Global"
 import { useParams } from "react-router-dom";
-import Axios from "axios";
-import { FaTelegramPlane} from "react-icons/fa"
+import Axios from "../Api";
 import { Link } from "react-router-dom"
 
 export const Viewblog = () => {
@@ -13,7 +12,7 @@ export const Viewblog = () => {
   
 
   const getdetails = ()=>{
-    Axios.get('http://localhost:3000/viewblog/'+id).then((res)=>{
+    Axios.get('/viewblog/'+id).then((res)=>{
       if(res.data.status){
         console.log(res.data.message);
         setDetails(res.data.data);
@@ -26,9 +25,9 @@ export const Viewblog = () => {
     })
   }
 
-Axios.defaults.withCredentials = true;
+//Axios.defaults.withCredentials = true;
   useEffect(()=>{
-    Axios.get('http://localhost:3000/verify').then((res)=>{
+    Axios.get('/verify').then((res)=>{
         if(res.data.status){
           console.log(res.data.message);
           setAuth(true);
@@ -47,7 +46,7 @@ Axios.defaults.withCredentials = true;
           <h3 className="text-center mt-3" style={{fontFamily:"sans-serif"}}>Blog Title :{details.title} </h3>
           <div className="view-content">
             { details.profilepic &&  (
-              <img src={`http://localhost:3000/public/images/${details.profilepic}`} alt="img" className="view-img mt-3"/>
+              <img src={`${import.meta.env.VITE_BASE_URL }/public/images/${details.profilepic}`} alt="img" className="view-img mt-3"/>
             )}
               <p className="view-des mt-3"><span style={{fontWeight:"bold",fontSize:"25px"}}>Description:</span>{details.description}</p>
             </div>
@@ -61,7 +60,7 @@ Axios.defaults.withCredentials = true;
                 related.map((element,index)=>(
                   <div className="col" key={index}>
                       <div className="card">
-                          <img src={`http://localhost:3000/public/images/${element.profilepic}`} alt="img" className="card-img-top cards-img"/>
+                          <img src={`${import.meta.env.VITE_BASE_URL }/public/images/${element.profilepic}`} alt="img" className="card-img-top cards-img"/>
                           <div className="card-body">
                               <h4 className="card-title">{element.title}</h4>
                               <Link to={`/viewpost/${element._id}`} className="btn btn-warning">View Blog</Link>

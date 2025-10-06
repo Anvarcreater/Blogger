@@ -2,20 +2,20 @@ import { useContext } from "react"
 import { GlobContext } from "../Global";
 import { Link} from "react-router-dom"
 import { useState } from "react";
-import Axios from "axios";
+import Axios from "../Api";
 import { useEffect } from "react";
 
 export const Draft = () => {
-  const {myblogs,getmyblogs,draft} = useContext(GlobContext);
+  const {myblogs,fetchmyblogs,draft} = useContext(GlobContext);
   const [publish,setPublish] = useState(true);
   
   
   const handlepublish = (id)=>{
-        Axios.put(`http://localhost:3000/publish/${id}`,{publish}).then((res)=>{
+        Axios.put(`/publish/${id}`,{publish}).then((res)=>{
           if (res.data.status){
             console.log(res.data.message);
            setPublish(false);
-           getmyblogs();
+           fetchmyblogs();
           }else{
             console.log(res.data.error);
           }
@@ -25,10 +25,10 @@ export const Draft = () => {
   }
   
   const handledelete = (id)=>{
-        Axios.delete(`http://localhost:3000/deleteblog/${id}`).then((res)=>{
+        Axios.delete(`/deleteblog/${id}`).then((res)=>{
           if (res.data.status){
             console.log(res.data.messagge);
-            getmyblogs();
+            fetchmyblogs();
           }else{
             console.log(res.data.message);
           }
@@ -47,7 +47,7 @@ export const Draft = () => {
                 draft.map((element,index)=>(
                   <div className="col" key={index}>
                       <div className="card">
-                          <img src={`http://localhost:3000/public/images/${element.profilepic}`} alt="img" className="card-img-top cards-img"/>
+                          <img src={`${import.meta.env.VITE_BASE_URL }/public/images/${element.profilepic}`} alt="img" className="card-img-top cards-img"/>
                           <div className="card-body">
                               <h4 className="card-title">{element.title}</h4>
                             <Link to={`/viewpost/${element._id}`} className="btn btn-warning">View Blog</Link>

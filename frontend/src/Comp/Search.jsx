@@ -1,10 +1,18 @@
 import { useContext ,useEffect} from "react"
 import { GlobContext } from "../Global"
-import { Link } from "react-router-dom";
-import Axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import Axios from "../Api";
 
 export const Search = () => {
   const {result,setAuth} = useContext(GlobContext);
+  useEffect(()=>{
+     Axios.get('/verify').then((res)=>{
+        if(res.data.status){
+          console.log(res.data.message);
+          setAuth(true);
+        }
+     })
+  },[]);
   return (
     <div>
       <div className="container comp-cont">
@@ -16,7 +24,7 @@ export const Search = () => {
                 result.map((element,index)=>(
                   <div className="col" key={index}>
                       <div className="card">
-                          <img src={`http://localhost:3000/public/images/${element.profilepic}`} alt="img" className="card-img-top cards-img"/>
+                          <img src={`${import.meta.env.VITE_BASE_URL }/public/images/${element.profilepic}`} alt="img" className="card-img-top cards-img"/>
                           <div className="card-body">
                               <h4 className="card-title">{element.title}</h4>
                               <Link to={`/viewpost/${element._id}`} className="btn btn-warning">View Blog</Link>

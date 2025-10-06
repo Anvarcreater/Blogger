@@ -1,44 +1,44 @@
 import { useContext, useState,useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { GlobContext } from "../Global"
-import Axios from 'axios';
+import Axios from '../Api';
 
 
 export const Signup = () => {
-   const Navigate = useNavigate();
+   const navigate = useNavigate();
     const [msg,setmsg]=useState(false);
     const [message,setMessage]=useState();
     const {email,setEmail,password,setPassword,setAuth}=useContext(GlobContext);
-    Axios.defaults.withCredentials=true;
+    
     const handle= ()=>{
-            Axios.post('http://localhost:3000/signup',{
-                username,email,password
+            Axios.post('/signup',{
+                email,password
             }).then((res)=>{
                 if(res.data.status){
                     console.log(res);
-                    Navigate('/login');
+                    navigate('/login');
                 }else{
                     console.log(res);
                     setmsg(true);
                     setMessage(res.data.message);
                     setTimeout(() => {
                         setmsg(false);
-                    },2000);
+                    },3000);
                 }
             }).catch((err)=>{
                 console.log(err);
             })
     }
     useEffect(()=>{
-     Axios.get('http://localhost:3000/verify').then((res)=>{
+     Axios.get('/verify').then((res)=>{
         if(res.data.status){
           console.log(res.data.message);
           setAuth(true);
-          Navigate('/');
+          navigate('/');
         }else{
           console.log(res.data.message);
           setAuth(false);
-          Navigate('/signup');
+          navigate('/signup');
         }
      })
   },[]);
@@ -50,12 +50,12 @@ export const Signup = () => {
             <div className="d-flex justify-content-center align-items-center">
                 <div className="form-group">
                     <label className="form-label" htmlFor="email">Your Email</label>
-                    <input type="email" className="form-control sigfield" autoComplete="off" id="email" name="email"
-                     placeholder="Email" onChange={(e)=>{setEmail(e.target.value)}} required/><br></br>
+                    <input type="email" className="form-control mb-3 sigfield" autoComplete="off" id="email" name="email"
+                     placeholder="Email" onChange={(e)=>{setEmail(e.target.value)}} required/>
                     <label className="form-label" htmlFor="password">Your Password</label>
-                    <input type="password" className="form-control sigfield"id="password" name="password"
-                     placeholder="password" onChange={(e)=>{setPassword(e.target.value)}} required/><br></br>
-                    <input type="submit" value="Signup" className="signbtn" onClick={handle}/><br></br><br></br>
+                    <input type="password" className="form-control  mb-3 sigfield"id="password" name="password"
+                     placeholder="password" onChange={(e)=>{setPassword(e.target.value)}} required/>
+                    <input type="submit" value="Signup" className="signbtn mb-4" onClick={handle}/>
                     <div className="d-flex justify-content-between">
                         <p>Already have an Account ?</p>
                         <Link to="/login">Login</Link>

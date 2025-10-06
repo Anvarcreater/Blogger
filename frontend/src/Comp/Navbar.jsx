@@ -2,16 +2,16 @@ import { Link, useNavigate} from "react-router-dom"
 import { FaSearch} from "react-icons/fa";
 import {useContext, useState} from 'react'
 import { GlobContext } from "../Global";
-import Axios from "axios";
+import Axios from "../Api";
 
 export const Navbar = () => {
   const {Auth,logout,setResult}=useContext(GlobContext);
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
     const [query,setQuery] = useState('');
    const handlesearch =()=>{
-        Axios.post('http://localhost:3000/search',{query}).then((res)=>{
+        Axios.post('/search',{query}).then((res)=>{
             if(res.data.status){
-                Navigate('/search');
+                navigate('/search');
                 setResult(res.data.data);
                 console.log(res.data.message);
             }

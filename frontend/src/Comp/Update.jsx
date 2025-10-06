@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react"
-import Axios from "axios";
+import Axios from "../Api";
 import { GlobContext } from "../Global";
 import { useParams } from "react-router-dom";
 
 
 export const Update = () => {
-  const {getmyblogs,myblogs,getallblogs,setAuth} = useContext(GlobContext);
+  const {fetchmyblogs, myblogs, fetchallblogs , setAuth} = useContext(GlobContext);
     const [title,setTitle]= useState("");
     const [category,setCategory] = useState("");
     const [profilepic,setProfilepic] = useState("");
@@ -15,7 +15,7 @@ export const Update = () => {
     const {id} = useParams();
 
     useEffect(()=>{
-     Axios.get('http://localhost:3000/verify').then((res)=>{
+     Axios.get('/verify').then((res)=>{
         if(res.data.status){
           console.log(res.data.message);
           setAuth(true);
@@ -26,7 +26,7 @@ export const Update = () => {
   },[setAuth]);
     
   const getdetails = ()=>{
-    Axios.get('http://localhost:3000/viewblog/'+id).then((res)=>{
+    Axios.get('/viewblog/'+id).then((res)=>{
       if(res.data.status){
         console.log(res.data.message);
         setTitle(res.data.data.title);
@@ -42,14 +42,13 @@ export const Update = () => {
   }
 
 
-    Axios.defaults.withCredentials = true;
     const updateblog = ()=>{
         const formdata = new FormData();
         formdata.append('file',profilepic);
         formdata.append('title',title);
         formdata.append('category',category);
         formdata.append('description',description);
-        Axios.put(`http://localhost:3000/editblog/${id}`,formdata,{
+        Axios.put(`/editblog/${id}`,formdata,{
   headers: { "Content-Type": "multipart/form-data" }}).then((res)=>{
             if(res.data.status){
                 console.log(res);
@@ -61,8 +60,8 @@ export const Update = () => {
                 setTitle("");
                 setCategory("");
                 setDescription("");
-                getmyblogs();
-                getallblogs();
+                fetchmyblogs();
+                fetchallblogs();
             }
         }).catch((err)=>{
             console.log(err);
@@ -84,7 +83,7 @@ export const Update = () => {
                     <div className="col-lg-5">
                         <input type="text" placeholder="Enter category" value={category} onChange={(e)=>{setCategory(e.target.value)}} className="form-control create-post-w" />
                     </div> 
-                </div><br></br>
+                </div>
                 <div>
                     <input type="file" onChange={e=> setProfilepic(e.target.files[0])} className="form-control"/><br></br>
                     <textarea className="form-control create-post-w" value={description} onChange={(e)=>{setDescription(e.target.value)}} style={{height:"200px"}} placeholder="Enter post description"></textarea><br></br><br></br>

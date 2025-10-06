@@ -9,11 +9,11 @@ const { default: mongoose } = require('mongoose');
 
 const router = express.Router();
 
-//  Authentication API's
+//  Authentication API's 
 
 router.post('/signup',async (req,res)=>{
     const {email,password}= req.body;
-    if (email === " " || password === " " ){
+    if (!email || !password || email.trim() === "" || password.trim() === "" ){
         return res.json({message:"email or password should not be empty..."});
     }else if (password.length <7){
         return res.json({message:"password length should not be less than 8 character"});
@@ -34,20 +34,24 @@ router.post('/signup',async (req,res)=>{
 
 router.post('/login',async(req,res)=>{
     const {email,password}= req.body;
-    if (email === " " || password === " " ){
+    if (!email || !password || email.trim() === "" || password.trim() === "" ){
         return res.json({message:"email or password should not be empty..."});
     }
     const user = await User.findOne({email});
     if (!user){
         return res.json({message:"user not found",status:false});
     }
-    const validpassword = await bcrypt.compare(password,user.password);
-    if(!validpassword){
-        return res.json({message:"incorrect password",status:false});
-    }else{
-        const token = jwt.sign({id:user._id,email:user.email},process.env.SECRETKEY,{expiresIn:'1h'});
-        res.cookie("token",token,{httpOnly:true,maxAge:3600000});
-        return res.json({status:true,message:"login succesfully"});
+    try{
+        const validpassword = await bcrypt.compare(password,user.password);
+        if(!validpassword){
+            return res.json({message:"incorrect password",status:false});
+        }else{
+            const token = jwt.sign({id:user._id,email:user.email},process.env.SECRETKEY,{expiresIn:'1h'});
+            res.cookie("token",token,{httpOnly:true,maxAge:3600000,secure:true,sameSite:"strict"});
+            return res.json({status:true,message:"login succesfully"});
+        }
+    }catch(err){
+        return res.json({ message: "Something went wrong during authentication", status: false });
     }
 
 })
@@ -95,6 +99,9 @@ router.post('/createblog',upload.single('file'),async(req,res)=>{
     const token = req.cookies.token;
    const  {title,category,description} = req.body;
    try{
+        if (!title || !category || !description || title.trim() === "" || description.trim() === "" || category.trim() === "" ){
+            return res.json({status:false,message:"Input fields should not be empty....!"});
+         }
         const decoded = await jwt.verify(token,process.env.SECRETKEY);
         const id = decoded.id;
         const newblog = new Blog({
@@ -107,13 +114,13 @@ router.post('/createblog',upload.single('file'),async(req,res)=>{
         await newblog.save();
         res.json({message:"Blog created",status:true});
    }catch(err){
-        res.json({message:"Invalid token or login again"});
+        res.json({status:false,message:"Invalid token or login again"});
    }
     console.log(req.file.filename);
 })
 
 // Getting all blogs from db
-router.get('/getallblogs',async(req,res)=>{
+router.get('/blogs',async(req,res)=>{
     try{
         const Allblogs = await Blog.find({ispublished:true});
         return res.json({status:true,data:Allblogs,message:"successfully retrieved"});
@@ -123,14 +130,14 @@ router.get('/getallblogs',async(req,res)=>{
 })
 
 // Getting specified user blogs and their draft blogs (which is not published)
-router.get('/getmyblogs',async(req,res)=>{
+router.get('/myblogs',async(req,res)=>{
     const token = req.cookies.token;
     try{
         const decoded = await jwt.verify(token,process.env.SECRETKEY);
         const id = decoded.id;
         const myblogs = await Blog.find({userid:id,ispublished:true});
         const mydraft = await Blog.find({userid:id,ispublished:false})
-        if(!myblogs){
+        if(myblogs.length===0){
             return res.json({message:"No blogs created yet",status:false});
         }
         return res.json({message:"successfully retrieved",status:true,data:myblogs,mydraft:mydraft});
@@ -225,10 +232,14 @@ router.post('/search',async(req,res)=>{
     const {query} = req.body;
     try{
         const value = query.trim().toLowerCase();
-        const blogs = await Blog.find();
-        const result = blogs.filter(item=> item.title.toLowerCase().includes(value) ||
-        item.category.toLowerCase().includes(value) || item.description.toLowerCase().includes(value));
-        return res.json({status:true,data:result,message:"result"});
+        const blogs = await Blog.find({
+            $or: [
+                { title: { $regex: value, $options: "i" } },
+                { category: { $regex: value, $options: "i" } },
+                { description: { $regex: value, $options: "i" } }
+            ]
+        });
+        return res.json({status:true,data:blogs,message:"result"});
     }catch(err){
         return res.json({message:err});
     }

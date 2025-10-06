@@ -1,17 +1,17 @@
 import { useContext } from "react"
 import { GlobContext } from "../Global";
 import { Link} from "react-router-dom"
-import Axios from "axios";
+import Axios from "../Api";
 import { useEffect } from "react";
 
 export const Myblogs = () => {
-    const {myblogs,getmyblogs} = useContext(GlobContext);
+    const {myblogs,fetchmyblogs} = useContext(GlobContext);
 
     const handledelete = (id)=>{
-        Axios.delete(`http://localhost:3000/deleteblog/${id}`).then((res)=>{
+        Axios.delete(`/deleteblog/${id}`).then((res)=>{
           if (res.data.status){
             console.log(res.data.messagge);
-            getmyblogs();
+            fetchmyblogs();
           }else{
             console.log(res.data.message);
           }
@@ -30,7 +30,7 @@ export const Myblogs = () => {
                 myblogs.map((element,index)=>(
                   <div className="col" key={index}>
                       <div className="card">
-                          <img src={`http://localhost:3000/public/images/${element.profilepic}`} alt="img" className="card-img-top cards-img"/>
+                          <img src={`${import.meta.env.VITE_BASE_URL }/public/images/${element.profilepic}`} alt="img" className="card-img-top cards-img"/>
                           <div className="card-body">
                               <h4 className="card-title">{element.title}</h4>
                                <Link to={`/viewpost/${element._id}`} className="btn btn-warning">View Blog</Link>
@@ -39,8 +39,8 @@ export const Myblogs = () => {
                                       Action
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li className="btn-grp"><Link to={`/update/${element._id}`} className="btn btn-primary">update</Link></li>
-                                      <li className="btn-grp"><button className="btn btn-danger"onClick={()=>{handledelete(element._id)}}>delete</button></li>
+                                        <li className="btn-grp ms-2 "><Link to={`/update/${element._id}`} className="btn btn-primary">update</Link></li>
+                                      <li className="btn-grp ms-2"><button className="btn btn-danger"onClick={()=>{handledelete(element._id)}}>delete</button></li>
                                     </ul>
                                 </div>
                             
