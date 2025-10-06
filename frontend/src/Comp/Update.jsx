@@ -43,6 +43,11 @@ export const Update = () => {
 
 
     const updateblog = ()=>{
+      if (!(profilepic instanceof File)) {
+            setMessage("Input fields should not be empty...! and Please upload a valid image file");
+            setMsg(true);
+            return;
+        }
         const formdata = new FormData();
         formdata.append('file',profilepic);
         formdata.append('title',title);
