@@ -15,7 +15,7 @@ export const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [tab,setTab]=useState("create");
-  Axios.defaults.withCredentials = true;
+ // Axios.defaults.withCredentials = true;
   useEffect(()=>{
      Axios.get('/verify').then((res)=>{
         if(res.data.status){
