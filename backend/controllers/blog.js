@@ -35,16 +35,16 @@ router.post('/signup',async (req,res)=>{
 router.post('/login',async(req,res)=>{
     const {email,password}= req.body;
     if (!email || !password || email.trim() === "" || password.trim() === "" ){
-        return res.json({message:"email or password should not be empty..."});
+        return res.json({message:"Email or password should not be empty..."});
     }
     const user = await User.findOne({email});
     if (!user){
-        return res.json({message:"user not found",status:false});
+        return res.json({message:"User not found....",status:false});
     }
     try{
         const validpassword = await bcrypt.compare(password,user.password);
         if(!validpassword){
-            return res.json({message:"incorrect password",status:false});
+            return res.json({message:"Incorrect password",status:false});
         }else{
             const token = jwt.sign({id:user._id,email:user.email},process.env.SECRETKEY,{expiresIn:'1h'});
             res.cookie("token",token,{httpOnly:true,maxAge:3600000,secure:true,sameSite:"strict"});
@@ -112,7 +112,7 @@ router.post('/createblog',upload.single('file'),async(req,res)=>{
             userid:id 
         })
         await newblog.save();
-        res.json({message:"Blog created",status:true});
+        res.json({message:"Blog created Successfully",status:true});
    }catch(err){
         res.json({status:false,message:"Invalid token or login again"});
    }
