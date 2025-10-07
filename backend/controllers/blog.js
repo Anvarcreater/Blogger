@@ -221,7 +221,7 @@ router.delete('/deleteblog/:id',async(req,res)=>{
             })
         }
         await Blog.findByIdAndDelete({_id:id});
-        return res.json({status:true,message:"blog deleted successfully"});
+        return res.json({status:true,message:"Blog deleted successfully"});
     }catch(err){
         return res.json({message:err,status:false})
     }

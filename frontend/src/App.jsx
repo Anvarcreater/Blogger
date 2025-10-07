@@ -13,7 +13,8 @@ import { Search } from "./Comp/Search"
 import { Footer } from "./Comp/Footer"
 
 import './App.css';
-import { Update } from "./Comp/update"
+import { Update } from "./Comp/Update"
+
 
 function App() {
   
