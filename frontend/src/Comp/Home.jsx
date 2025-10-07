@@ -41,7 +41,7 @@ export const Home = () => {
       latest.push(
         <div className="col" key={i}>
               <div className="card">
-                  <img src={items.postpicurl} alt="img" className="card-img-top cards-img"/>
+                  <img src={`${import.meta.env.VITE_BASE_URL }/public/images/${items.profilepic}`} alt="img" className="card-img-top cards-img"/>
                   <div className="card-body">
                       <h4 className="card-title">{items.title}</h4>
                       <Link to={`/viewpost/${items._id}`} className="btn btn-warning">View Blog</Link>

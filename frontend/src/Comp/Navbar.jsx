@@ -9,15 +9,8 @@ export const Navbar = () => {
     const navigate = useNavigate();
     const [query,setQuery] = useState('');
    const handlesearch =()=>{
-        Axios.post('/search',{query}).then((res)=>{
-            if(res.data.status){
-                navigate('/search');
-                setResult(res.data.data);
-                console.log(res.data.message);
-            }
-        }).catch((err)=>{
-            console.log(err);
-        })
+        if (!query.trim()) return; // prevent empty search
+        navigate(`/search?q=${encodeURIComponent(query)}`);
     }
   return (
     <div>

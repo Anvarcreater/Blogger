@@ -1,10 +1,14 @@
 import { useContext ,useEffect} from "react"
 import { GlobContext } from "../Global"
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate ,useLocation} from "react-router-dom";
 import Axios from "../Api";
 
 export const Search = () => {
-  const {result,setAuth} = useContext(GlobContext);
+  const {result,setAuth,setResult} = useContext(GlobContext);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const query = queryParams.get("q");
+
   useEffect(()=>{
      Axios.get('/verify').then((res)=>{
         if(res.data.status){
@@ -12,7 +16,19 @@ export const Search = () => {
           setAuth(true);
         }
      })
-  },[]);
+     if (query) {
+      Axios.post("/search", { query })
+        .then((res) => {
+          if (res.data.status) {
+            setResult(res.data.data);
+          } else {
+            setResult([]);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  },[query]);
+
   return (
     <div>
       <div className="container comp-cont">
