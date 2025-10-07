@@ -12,6 +12,7 @@ export const Update = () => {
     const [description,setDescription] = useState("");
     const [message,setMessage] = useState("");
     const [msg,setMsg] = useState(false);
+    const [status,setStatus]=useState(true); 
     const {id} = useParams();
 
     useEffect(()=>{
@@ -43,10 +44,17 @@ export const Update = () => {
 
 
     const updateblog = ()=>{
-      if (!(profilepic instanceof File)) {
-            setMessage("Input fields should not be empty...! and Please upload a valid image file");
-            setMsg(true);
-            return;
+        if (profilepic && typeof profilepic === "string" && profilepic.trim() !== "") {
+             console.log("Using existing image, skipping upload validation.");
+        }       
+        else if (profilepic && !(profilepic instanceof File)) {
+              setMessage("Please upload a valid image file");
+              setMsg(true);
+              setStatus(false);
+              setTimeout(()=>{
+                    setMsg(false);
+                  },3000);
+              return;
         }
         const formdata = new FormData();
         formdata.append('file',profilepic);
@@ -59,6 +67,7 @@ export const Update = () => {
                 console.log(res);
                 setMessage(res.data.message);
                 setMsg(true);
+                setStatus(true);
                 setTimeout(()=>{
                     setMsg(false);
                 },2000);
@@ -67,6 +76,7 @@ export const Update = () => {
                 setDescription("");
                 fetchmyblogs();
                 fetchallblogs();
+                getdetails();
             }
         }).catch((err)=>{
             console.log(err);
@@ -79,7 +89,7 @@ export const Update = () => {
     <div>
         <div className="create-post-con mb-3 mt-3 comp-cont">
             <h2>Update Blog</h2>
-            {msg && <p className="text-center text-success">{message}</p>}
+            {msg && <p className={status  ? "text-center text-success":"text-center text-danger" }>{message}</p>}
             <div className="form-group mt-3 create-post-con">
                 <div className="row create-h-pad">
                     <div className="col-lg-7">

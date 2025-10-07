@@ -21,6 +21,10 @@ export const Create = () => {
         if (!profilepic || !(profilepic instanceof File)) {
             setMessage("Input fields should not be empty...! and Please upload a valid image file");
             setMsg(true);
+            setStatus(false);
+            setTimeout(()=>{
+                setMsg(false);
+            },3000);
             return;
         }
         const formdata = new FormData();
@@ -34,7 +38,7 @@ export const Create = () => {
                 console.log(res);
                 setMessage(res.data.message);
                 setMsg(true);
-                
+                setStatus(true);
                 setTimeout(()=>{
                     setMsg(false);
                 },2000);
@@ -49,7 +53,7 @@ export const Create = () => {
                 console.log(res);
                 setMessage(res.data.message);
                 setMsg(true);
-                setStatus();
+                setStatus(false);
                 setTimeout(()=>{
                     setMsg(false);
                 },3000);
